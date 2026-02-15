@@ -1,0 +1,45 @@
+{% include 'base.html' %}
+<h2 style="color: white;">Détails du message</h2>
+<div class="notif-message-content">
+    <div class="message-header">
+        <p><strong>Département:</strong> {{ message.get_departement_display }}</p>
+        <p><strong>Niveau:</strong> {{ message.get_level_display }}</p>
+        <p><strong>Date de publication:</strong> {{ message.created_at|date:"d/m/Y H:i" }}</p>
+
+    <p><strong>Type:</strong> {{ message.get_message_type_display }}</p>
+    </div>
+    <p><strong>Contenu:</strong> </p>
+    <p>{{ message.content }}</p>
+    
+<!-- Back link -->
+<p><a href="{% url 'notification' %}">← Retour au tableau de bord</a></p>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #01013e;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;    
+        min-height: 100vh;
+        align-items: center;
+    }
+    .notif-message-content {
+        background: white;
+        padding: 20px;  
+        margin-top: 20px;
+        border-radius: 25px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 400px;   
+    }
+    .message-header p {
+        display: flex;
+        justify-content: start;
+        align-items: baseline;
+        margin: 5px 0;
+    }
+    .notif-message-content p {
+        margin: 10px 0;
+    }
+</style>

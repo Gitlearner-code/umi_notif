@@ -1,0 +1,52 @@
+{% include 'base.html' %}
+   <a href="{%url 'message_content'%}">
+        click this link
+    </a>
+    
+    <a href="{%url 'message_content'%}">
+        <div class="notifs-rep-departement-container">
+        <h3 class="depatement-title">
+            Genie Informatique
+        </h3>
+        <div class="notifs-messages-div">
+          {% for message in messages %}
+            <div class="notif-message-div">
+                <h4>{{ message.departement }}</h4>
+                <h4>{{message.level}}</h4>
+                <h4>{{ message.content|truncatewords:2  }}</h4>
+                <h4>Date: {{ message.created_at|date:"d/m/Y" }}</h4>
+            </div>
+          {% empty %}
+            <p>No messages available yet.</p>
+          {% endfor %}
+        </div>
+</div>
+    </a>
+
+<style>
+.notifs-rep-departement-container {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.depatement-title {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+.notifs-messages-div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.notif-message-div {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+.notif-message-div h4 {
+    margin: 5px 0;
+}
+
+</style>

@@ -1,0 +1,127 @@
+{% include 'base.html' %}
+    <div class="welcome-div">
+        <h1>Welcome to the notification main page {{ request.user.last_name }}</h1>
+    </div>
+
+{% if request.user.user_type == 'EXEC' %}
+
+
+    <div>
+        <div class="notifs-rep-departement-container">
+             <h3>Department Messages</h3>
+            {% for dept_name, messages in departements.items %}
+                <div class="notif-message-div">
+                    
+                    <h3>{{ dept_name }} ({{ messages|length }})</h3>
+                    
+                    
+                    <ul class="message-ul">
+                        {% for message in messages %}
+                            <a href="{% url 'message_detail' message.slug%}">
+                                <li>{{ message.departement }} - {{ message.message_type }} ({{ message.created_at }})</li>
+                            </a>
+                        {% empty %}
+                            <li>No messages in this department.</li>
+                
+
+                        {% endfor %}
+                    </ul>
+                </div>
+
+          {% empty %}
+            <p>No messages available yet.</p>
+          {% endfor %}
+    </div>
+
+   
+       
+
+
+
+
+
+    </div>
+
+{% elif request.user.user_type == 'REP' %}
+    <h3>
+      Vous pourrez voir ici tous les messages liés à votre département 
+      en votre qualité de Représentant du Département: {{ request.user.get_departement_display }}
+    </h3>
+    <p style="color: white;">Total messages dans votre département: {{ message_count }}</p>
+    <div class="notifs-rep-departement-container">
+        <div class="notifs-messages-div">
+          {% for message in messages %}
+            <a href="{% url 'message_detail' message.slug%}">
+                <div class="notif-message-div">
+                <h4>{{ message.get_departement_display }}</h4>
+                <h4>{{ message.get_level_display }}</h4>
+                <h4>{{ message.content|truncatewords:5 }}</h4>
+                <h4>Date: {{ message.created_at|date:"d/m/Y" }}</h4>
+            </div>
+            </a>
+          {% empty %}
+            <p>No messages available yet.</p>
+          {% endfor %}
+        </div>
+    </div>
+
+{% else %}
+    <h3>
+      Vous n'avez pas accès à cette page en votre qualité de {{ request.user.get_user_type_display }}
+    </h3>
+{% endif %}
+
+<style>
+    body {
+        padding: 10px;
+        display: flex;
+        justify-content: center;    
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+
+    }
+
+    .welcome-div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        text-align: center;
+        width: fit-content;
+    }
+    
+    h3 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        color: white;
+    }
+    .notifs-rep-departement-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: center;
+        max-width: 800px;
+        align-self: center;
+        background-color: whitesmoke;
+        border-radius: 30px;
+        padding: 5px;
+    }
+    .notif-message-div {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        
+    }
+    h3 {
+        color: #01013e;
+    }
+
+</style>

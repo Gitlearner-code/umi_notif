@@ -1,0 +1,76 @@
+{% include 'base.html' %}
+<h4 class="note">Cette section n'est reserve qu'a une liste specifique de certains  membres  du Bureau des Etudiants (BDE). et des representants de departements si vous n'en netes pas membre vous ne serez pas en mesure du vous connecter. vous pouvez cependant publier</h4>
+<a href="{%url 'home'%}">Publier un message.</a>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div>{{ form.username.label_tag }} {{ form.username }}</div>
+  <div>{{ form.password.label_tag }} {{ form.password }}</div>
+  <div>{{ form.user_type.label_tag }} {{ form.user_type }}</div>
+
+  <button type="submit">Login</button>
+</form>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #01013e;
+    display: flex;
+    justify-content: center;    
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 10px;
+    align-items: center;
+  } 
+  .note {
+    color: white;
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 400px;
+  }
+ form {
+  background: white;
+  padding: 20px;  
+  margin-top: 20px;
+  border-radius: 25px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 300px;   
+  box-sizing: border-box;
+  height: auto; 
+  display: flex;
+  flex-direction: column; 
+ }
+  form div {
+    margin-bottom: 15px;
+
+  }
+  form label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+  }
+  form input, form select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+  }
+  form button {
+      padding: 10px;
+      background: #01013e;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+  }
+  form button:hover {
+      background: #0056b3;
+  }
+
+  @media (max-width: 600px) {
+      form {
+          width: 90%;
+      }
+  }
+
+</style>

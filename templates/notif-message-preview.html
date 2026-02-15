@@ -1,0 +1,74 @@
+{% include 'base.html' %}
+<div class="preview-div">
+    <div class="preview-header">
+        <p><strong>Departement: </strong> {{ data.departement }}</p>
+        <p><strong>Niveau d'etude: </strong> {{ data.level }}</p>
+        <p><strong>Type de message: </strong> {{ data.message_type }}</p>
+    </div>
+    
+    <p><strong>Contenu:</strong> {{ data.content }}</p>
+
+    <form method="post" id="previewForm">
+        {% csrf_token %}
+  
+        <input type="hidden" name="departement" value="{{ data.departement }}">
+        <input type="hidden" name="level" value="{{ data.level }}">
+        <input type="hidden" name="message_type" value="{{ data.message_type }}">
+        <input type="hidden" name="content" value="{{ data.content }}">
+
+        <button type="submit" name="cancel">Annuler</button>
+        <button type="submit" name="modify">Modifier</button>
+        <button type="submit" name="post" id="postBtn">Publier</button>
+    </form>
+</div>
+
+
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #01013e;
+        padding: 20px;
+        display: flex;
+        justify-content: center;    
+        min-height: 100vh;
+        align-items: center;
+    }
+    .preview-div {
+        background: white;
+        padding: 20px;  
+        margin-top: 20px;
+        border-radius: 25px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        width: 300px;   
+        height: auto;
+    }
+    .preview-header p {
+        display: flex;
+        justify-content: start;
+        align-items: baseline;
+        margin: 5px 0;
+    }
+    .preview-div p {
+        margin: 10px 0;
+    }
+    .preview-div button {
+        padding: 5px;
+        width: 80px;
+        margin: 5px;
+        background: #01013e;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    .preview-div button:hover {
+        background: #0056b3;
+    }
+</style>
+<script>
+    document.getElementById("postBtn").addEventListener("click", function() {
+        document.getElementById("postBtn").style.display = "none";
+    });
+</script>

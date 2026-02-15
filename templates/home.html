@@ -1,0 +1,224 @@
+{% include 'base.html' %}
+
+{% if messages %}
+  <div id="feedbackModal" class="modal">
+    <div class="modal-content">
+      {% for message in messages %}
+        {% if "success" in message.tags %}
+          <h2>{{ message }}</h2>
+        {% elif "error" in message.tags %}
+          <h2>Something Went Wrong ⚠️</h2>
+          <p>{{ message }}</p>
+        {% endif %}
+      {% endfor %}
+      <button onclick="closeModal()">Close</button>
+      <a href="{% url 'home' %}"><button>Create Another</button></a>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("feedbackModal").style.display = "block";
+    });
+    function closeModal() {
+      document.getElementById("feedbackModal").style.display = "none";
+    }
+  </script>
+
+  {% endif %}
+
+
+
+
+
+  <main>
+      {% block content %}
+          <!-- create_message.html -->
+          <div class="container">
+              <p class="init-text">
+                  Bienvenue sur UMI NOTIF. Une plateforme de 
+                  notification du BDE pour les étudiants de l'UMI.Ici vous 
+                  avez l'amabilite de dire le fonds de vos penses de maniere
+                  anonymes, et respectueuse. vous pouvez vous plaindre,
+                  faire des remarques et meme des suggestions
+              </p>
+              <form class="notif-form" method="post">
+                  <h4>Entrez votre message de maniere anonymes</h4>
+                  {% csrf_token %}
+                  {{ form.as_p }}
+                  <div class="check-box-div"> 
+                      <input type="checkbox" required id="anonymous" name="attestation" checked>
+                      <label for="anonymous">Ce message a ete ecris en toute etat de consciense.</label>
+                    </div>
+                    <button type="submit" name="preview">Next</button>
+                  </div>
+              
+          </form> 
+          </div>
+
+          <script>
+              const levelOptions = {
+                  "BA": ["L1","L2","L3"],
+                  "G.CIVIL": ["L1","L2","L3","L4","L5"],
+                  "BTS": ["L1","L2","L3"],
+                  "SEG": ["L1","L2","L3"],
+                  "GLT": ["L1","L2","L3"],
+                  "D": ["L1","L2","L3",],
+                  "G.I": ["L1","L2","L3","L4","L5"],
+                  "JC": ["L1","L2","L3"]
+              };
+
+              const deptSelect = document.getElementById("id_departement");
+              const levelSelect = document.getElementById("id_level");
+
+              deptSelect.addEventListener("change", function() {
+                  const dept = this.value;
+                  levelSelect.innerHTML = "";
+                  if (levelOptions[dept]) {
+                  levelOptions[dept].forEach(lvl => {
+                      const opt = document.createElement("option");
+                      opt.value = lvl;
+                      opt.textContent = lvl;
+                      levelSelect.appendChild(opt);
+                  });
+                  }
+              });
+          </script>
+      {% endblock %}
+  </main>
+
+    <footer>
+        <p>&copy; {{ year }} My Company</p>
+    </footer>
+
+    
+<style>
+
+
+.container{
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 5px;
+}
+
+.notif-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  max-width: 900px;  
+
+   
+}
+
+.init-text {
+  color: white;
+  font-size: 18px;
+}
+
+
+
+.notif-form p {
+  margin: 0;
+}
+form input, form textarea, form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+
+form textarea {
+  max-width: 100%;          /* prevents overflow */
+  box-sizing: border-box;
+}
+
+form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.notif-form button {
+    padding: 14px;
+    background: #01013e;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.notif-form button:hover {
+    background: #0056b3;
+}
+.check-box-div {
+    display: flex;
+    align-items: start;
+    margin-top: 10px;
+}
+.init-text {
+    color: white;
+    font-size: 18px;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0; 
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: #fff;
+  margin-left: auto;
+    margin-right: auto;
+    margin-top: 300px;
+  width: 40%;
+  text-align: center;
+  border-radius: 8px;
+}
+
+
+.modal-content h2 {
+  margin-top: 0;
+}
+.modal-content button {
+  margin: 10px;
+  padding: 10px 20px;
+  background: #01013e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.modal-content button:hover {
+  background: #0056b3;
+}
+@media (max-width: 600px) {
+    .container{
+        margin-top: 47px;
+    }
+    .modal-content {
+        margin-top: 190px;
+        width: 80%;
+    }
+}
+
+</style>
+</body>
+</html>
