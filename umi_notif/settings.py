@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gi-&9*+r^)8pwp$@8f9(_)yp_j%^x+05p0=4)8c_6!=mcct%xx'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -40,18 +40,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
-    'recommandation'
+    'recommandation',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    
 
 ]
 
@@ -80,9 +81,12 @@ WSGI_APPLICATION = 'umi_notif.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3'
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,  # keeps connections alive
+        ssl_require=True   # enforce SSL for Render Postgres
     )
 }
+
 
 
 # Password validation
@@ -124,6 +128,7 @@ ALLOWED_HOSTS = ['umi-notif.onrender.com','127.0.0.1', 'localhost',]
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_USER_MODEL = 'account.User'  # Specify the custom user model
 
