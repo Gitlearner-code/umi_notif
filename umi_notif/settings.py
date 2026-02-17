@@ -79,13 +79,25 @@ WSGI_APPLICATION = 'umi_notif.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600,  # keeps connections alive
-        ssl_require=True   # enforce SSL for Render Postgres
-    )
-}
+if os.environ.get("DATABASE_URL"):
+    # Use Render's PostgreSQL when DATABASE_URL is set
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
+else:
+    # Fallback to local SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+
 
 
 
