@@ -1,4 +1,5 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+{% block body %}
 <h2>Messages du département {{ departement }}</h2>
 <div class="notifs-messages-div">
   {% for message in messages %}
@@ -31,3 +32,4 @@
 
 <!-- Back link -->
 <p><a href="{% url 'notification' %}">← Retour au tableau de bord</a></p>
+{% endblock %}

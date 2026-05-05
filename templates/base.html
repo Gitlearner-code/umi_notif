@@ -1,67 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>UMI NOTIF</title>
 </head>
 <body>
-    <header>
-        <a href="{%url 'home'%}"><h2>UMI NOTIF</h2></a>
-        
-        <nav>
-            
+    <header class="site-header">
+        <a class="site-brand" href="{% url 'home' %}"><h1>UMI NOTIF</h1></a>
+        <nav class="site-nav" aria-label="Navigation principale">
             {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}">Logout</a>
-                <a href="{% url 'notification'%}">voir messages</a>
-            {% else%}
+                <a href="{% url 'notification' %}">Voir messages</a>
+            {% else %}
                 <a href="{% url 'login_view' %}">Login</a>
             {% endif %}
-            <a href="a-propos.html"> A propos du site</a>
+            <a href="a-propos.html">À propos</a>
         </nav>
     </header>
 
     <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
             background-color: #01013e;
             margin: 0;
             padding: 0;
+            padding-top: var(--header-h, 64px);
+            min-height: 100vh;
+            overflow-x: clip;
         }
-        header {
+
+        .site-header {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            gap: 0.75rem 1rem;
             background-color: #01013e;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-
-            z-index: 1;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+            z-index: 100;
             color: white;
-            padding: 10px;
+            padding: 0.65rem clamp(12px, 3vw, 24px);
             position: fixed;
             width: 100%;
+            left: 0;
             top: 0;
-            padding-right: 20px;
+            box-sizing: border-box;
         }
-        header a {
+
+        .site-brand {
             color: white;
             text-decoration: none;
-            font-size: 12px;
+            min-width: 0;
         }
-        nav a:hover {
-            text-decoration: underline;
+
+        .site-brand h1 {
+            margin: 0;
+            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
         }
-        nav {
+
+        .site-nav {
             display: flex;
-            gap: 15px;
-            margin-right: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem 1rem;
+            margin-left: auto;
         }
-        @media (max-width: 600px) {
-            header h2 {
-                font-size: 16px;
-                font-weight: bold;
+
+        .site-nav a {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            font-size: clamp(11px, 2.8vw, 13px);
+            white-space: nowrap;
+            padding: 0.35rem 0;
+        }
+
+        .site-nav a:hover {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        @media (max-width: 480px) {
+            .site-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .site-nav {
+                justify-content: center;
+                margin-left: 0;
             }
         }
     </style>
+    {% block body %}{% endblock %}
 </body>
 </html>

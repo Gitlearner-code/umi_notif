@@ -13,6 +13,7 @@ class Message(models.Model):
         ('JC', 'Journalisme et Communication'),
     ]
     LEVEL_CHOICES = [
+
         ('L1', 'L1' ),
         ('L2', 'L2' ),
         ('L3', 'L3' ),

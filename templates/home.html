@@ -1,59 +1,95 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+{% block body %}
 
-{% if messages %}
-  <div id="feedbackModal" class="modal">
-    <div class="modal-content">
-      {% for message in messages %}
+{% for message in messages %}
+  {% if forloop.first %}
+  <div id="feedbackModal" class="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle" aria-describedby="feedbackModalDesc">
+    <div class="feedback-modal__backdrop" onclick="closeModal()" aria-hidden="true"></div>
+    <div class="feedback-modal__panel {% if 'success' in message.tags %}feedback-modal__panel--success{% elif 'error' in message.tags %}feedback-modal__panel--error{% else %}feedback-modal__panel--neutral{% endif %}">
+      <button type="button" class="feedback-modal__close" onclick="closeModal()" aria-label="Fermer">&times;</button>
+      {% if "success" in message.tags %}
+      <div class="feedback-modal__icon feedback-modal__icon--success" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+          <path d="M14 24l7 7 13-14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 id="feedbackModalTitle" class="feedback-modal__title">Message envoyé</h2>
+      <p id="feedbackModalDesc" class="feedback-modal__text">{{ message }}</p>
+      <p class="feedback-modal__hint">Vous pouvez fermer cette fenêtre ou envoyer un autre message ci-dessous.</p>
+      {% elif "error" in message.tags %}
+      <div class="feedback-modal__icon feedback-modal__icon--error" aria-hidden="true">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2" opacity="0.35"/>
+          <path d="M16 16l16 16M32 16L16 32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2 id="feedbackModalTitle" class="feedback-modal__title">Une erreur s’est produite</h2>
+      <p id="feedbackModalDesc" class="feedback-modal__text">{{ message }}</p>
+      {% else %}
+      <h2 id="feedbackModalTitle" class="feedback-modal__title">Information</h2>
+      <p id="feedbackModalDesc" class="feedback-modal__text">{{ message }}</p>
+      {% endif %}
+      <div class="feedback-modal__actions {% if 'success' in message.tags %}feedback-modal__actions--success{% endif %}">
         {% if "success" in message.tags %}
-          <h2>{{ message }}</h2>
+        <button type="button" class="feedback-btn feedback-btn--secondary" onclick="closeModal()">Fermer</button>
+        <a class="feedback-btn feedback-btn--primary" href="#notif-message-form" onclick="closeModal(); return true;">Écrire un autre message</a>
         {% elif "error" in message.tags %}
-          <h2>Something Went Wrong ⚠️</h2>
-          <p>{{ message }}</p>
+        <button type="button" class="feedback-btn feedback-btn--secondary" onclick="closeModal()">Fermer</button>
+        <a class="feedback-btn feedback-btn--primary" href="#notif-message-form" onclick="closeModal(); return true;">Corriger le formulaire</a>
+        {% else %}
+        <button type="button" class="feedback-btn feedback-btn--secondary" onclick="closeModal()">Fermer</button>
+        <a class="feedback-btn feedback-btn--primary" href="{% url 'home' %}">OK</a>
         {% endif %}
-      {% endfor %}
-      <button onclick="closeModal()">Close</button>
-      <a href="{% url 'home' %}"><button>Create Another</button></a>
+      </div>
     </div>
   </div>
+  {% endif %}
+  {% endfor %}
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById("feedbackModal").style.display = "block";
-    });
     function closeModal() {
-      document.getElementById("feedbackModal").style.display = "none";
+      var el = document.getElementById("feedbackModal");
+      if (el) {
+        el.classList.add("feedback-modal--closing");
+        setTimeout(function () {
+          el.style.display = "none";
+          el.classList.remove("feedback-modal--closing");
+          document.body.style.overflow = "";
+        }, 220);
+      }
     }
+    document.addEventListener("DOMContentLoaded", function () {
+      var modal = document.getElementById("feedbackModal");
+      if (modal) {
+        document.body.style.overflow = "hidden";
+      }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeModal();
+    });
   </script>
 
-  {% endif %}
-
-
-
-
-
   <main>
-      {% block content %}
-          <!-- create_message.html -->
-          <div class="container">
-              <p class="init-text">
-                  Bienvenue sur UMI NOTIF. Une plateforme de 
-                  notification du BDE pour les étudiants de l'UMI.Ici vous 
-                  avez l'amabilite de dire le fonds de vos penses de maniere
-                  anonymes, et respectueuse. vous pouvez vous plaindre,
-                  faire des remarques et meme des suggestions
-              </p>
-              <form class="notif-form" method="post">
-                  <h4>Entrez votre message de maniere anonymes</h4>
-                  {% csrf_token %}
-                  {{ form.as_p }}
-                  <div class="check-box-div"> 
-                      <input type="checkbox" required id="anonymous" name="attestation" checked>
-                      <label for="anonymous">Ce message a ete ecris en toute etat de consciense.</label>
-                    </div>
-                    <button type="submit" name="preview">Next</button>
-                  </div>
-              
-          </form> 
-          </div>
+      <div class="container">
+          <p class="init-text">
+              Bienvenue sur UMI NOTIF. Une plateforme de
+              notification du BDE pour les étudiants de l'UMI. Ici vous
+              avez l'amabilité de dire le fond de vos pensées de manière
+              anonyme et respectueuse. Vous pouvez vous plaindre,
+              faire des remarques et même des suggestions.
+          </p>
+          <form id="notif-message-form" class="notif-form" method="post">
+              <h4>Entrez votre message de manière anonyme</h4>
+              {% csrf_token %}
+              {{ form.as_p }}
+              <div class="check-box-div">
+                  <input type="checkbox" required id="anonymous" name="attestation" checked>
+                  <label for="anonymous">Ce message a été écrit en toute conscience.</label>
+                </div>
+                <button type="submit" name="preview">Suivant</button>
+
+      </form>
+      </div>
 
           <script>
               const levelOptions = {
@@ -70,6 +106,7 @@
               const deptSelect = document.getElementById("id_departement");
               const levelSelect = document.getElementById("id_level");
 
+              if (deptSelect && levelSelect) {
               deptSelect.addEventListener("change", function() {
                   const dept = this.value;
                   levelSelect.innerHTML = "";
@@ -82,26 +119,30 @@
                   });
                   }
               });
+              }
           </script>
-      {% endblock %}
   </main>
 
-    <footer>
-        <p>&copy; {{ year }} My Company</p>
+    <footer class="site-footer">
+        <p>&copy; {{ year }} UMI NOTIF</p>
     </footer>
 
-    
+
 <style>
 
 
 .container{
-  margin-top: 80px;
+  margin-top: clamp(12px, 4vw, 28px);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 5px;
+  padding: clamp(8px, 3vw, 20px);
+  width: 100%;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .notif-form {
@@ -109,17 +150,24 @@
   flex-direction: column;
   justify-content: center;
   background-color: white;
-  padding: 20px;
+  padding: clamp(16px, 4vw, 28px);
   border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  max-width: 900px;  
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  width: 100%;
+  max-width: 900px;
+  box-sizing: border-box;
+}
 
-   
+.notif-form h4 {
+  margin-top: 0;
+  color: #01013e;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
 }
 
 .init-text {
   color: white;
-  font-size: 18px;
+  font-size: clamp(0.95rem, 2.8vw, 1.125rem);
+  line-height: 1.55;
 }
 
 
@@ -129,96 +177,271 @@
 }
 form input, form textarea, form select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    max-width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c8ced9;
+    border-radius: 8px;
+    font-size: 16px;
 }
 
 
 form textarea {
-  max-width: 100%;          /* prevents overflow */
+  min-height: 140px;
+  resize: vertical;
   box-sizing: border-box;
 }
 
 form label {
-    font-weight: bold;
+    font-weight: 600;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    color: #1a1a2e;
 }
 
 .notif-form button {
-    padding: 14px;
+    padding: 14px 20px;
     background: #01013e;
     color: #fff;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.2s ease, transform 0.15s ease;
+    margin-top: 8px;
+    width: 100%;
+    max-width: 280px;
+    align-self: center;
 }
 
 .notif-form button:hover {
-    background: #0056b3;
+    background: #1a1a6e;
 }
+
+.notif-form button:active {
+    transform: scale(0.98);
+}
+
 .check-box-div {
     display: flex;
-    align-items: start;
-    margin-top: 10px;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 14px;
+    text-align: left;
 }
+
+.check-box-div input {
+    width: auto;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.check-box-div label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
 .init-text {
-    color: white;
-    font-size: 18px;
-    max-width: 800px;
-    margin-bottom: 20px;
+    color: rgba(255,255,255,0.95);
+    max-width: 52rem;
+    margin-bottom: clamp(16px, 4vw, 28px);
 }
 
-.modal {
-  position: fixed;
-  z-index: 1000;
-  left: 0; 
-  top: 0;
-  width: 100%; 
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-  background: #fff;
-  margin-left: auto;
-    margin-right: auto;
-    margin-top: 300px;
-  width: 40%;
+.site-footer {
+  margin-top: auto;
+  padding: 24px 16px 32px;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.85rem;
   text-align: center;
-  border-radius: 8px;
 }
 
-
-.modal-content h2 {
-  margin-top: 0;
+.site-footer p {
+  margin: 0;
 }
-.modal-content button {
-  margin: 10px;
-  padding: 10px 20px;
+
+/* Feedback modal (only rendered when messages exist) */
+.feedback-modal {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  animation: feedbackFadeIn 0.35s ease;
+}
+
+.feedback-modal--closing {
+  animation: feedbackFadeOut 0.22s ease forwards;
+}
+
+@keyframes feedbackFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes feedbackFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.feedback-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(1, 1, 30, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.feedback-modal__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  padding: clamp(24px, 5vw, 36px) clamp(20px, 4vw, 32px) 28px;
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  text-align: center;
+  animation: feedbackSlide 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes feedbackSlide {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.feedback-modal__panel--success {
+  border-top: 4px solid #16a34a;
+}
+
+.feedback-modal__panel--error {
+  border-top: 4px solid #dc2626;
+}
+
+.feedback-modal__panel--neutral {
+  border-top: 4px solid #64748b;
+}
+
+.feedback-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(0, 0, 0, 0.06);
+  color: #444;
+  font-size: 1.5rem;
+  line-height: 1;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.feedback-modal__close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #111;
+}
+
+.feedback-modal__icon {
+  margin: 0 auto 12px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-modal__icon--success {
+  color: #16a34a;
+}
+
+.feedback-modal__icon--error {
+  color: #dc2626;
+}
+
+.feedback-modal__title {
+  margin: 0 0 10px;
+  font-size: clamp(1.2rem, 3.5vw, 1.45rem);
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.feedback-modal__text {
+  margin: 0 0 20px;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.feedback-modal__hint {
+  margin: -8px 0 22px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.feedback-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-btn--primary {
   background: #01013e;
   color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
-.modal-content button:hover {
-  background: #0056b3;
+
+.feedback-btn--primary:hover {
+  background: #1a1a6e;
+  box-shadow: 0 4px 14px rgba(1, 1, 62, 0.35);
 }
-@media (max-width: 600px) {
-    .container{
-        margin-top: 47px;
-    }
-    .modal-content {
-        margin-top: 190px;
-        width: 80%;
-    }
+
+.feedback-btn--secondary {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.feedback-btn--secondary:hover {
+  background: #e2e8f0;
+}
+
+@media (max-width: 420px) {
+  .feedback-modal__actions {
+    flex-direction: column;
+  }
+
+  .feedback-btn {
+    width: 100%;
+  }
 }
 
 </style>
-</body>
-</html>
+{% endblock %}

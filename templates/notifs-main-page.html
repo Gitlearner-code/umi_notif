@@ -1,4 +1,5 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+{% block body %}
     <div class="welcome-div">
         <h1>Welcome to the notification main page {{ request.user.last_name }}</h1>
     </div>
@@ -73,55 +74,131 @@
 
 <style>
     body {
-        padding: 10px;
+        padding: clamp(12px, 3vw, 24px);
         display: flex;
-        justify-content: center;    
+        justify-content: center;
         flex-direction: column;
         min-height: 100vh;
-        align-items: center;
-
+        align-items: stretch;
+        box-sizing: border-box;
     }
 
-    .welcome-div{
+    .welcome-div {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         color: white;
         text-align: center;
-        width: fit-content;
+        width: 100%;
+        max-width: 52rem;
+        margin: 0 auto 1rem;
+        padding: 0 0.5rem;
     }
-    
-    h3 {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-        color: white;
+
+    .welcome-div h1 {
+        font-size: clamp(1.1rem, 4vw, 1.5rem);
+        line-height: 1.35;
+        margin: 0.5rem 0;
     }
+
+    .notifs-rep-departement-container > h3,
+    body > h3 {
+        display: block;
+        text-align: center;
+        margin: 0.75rem auto 1rem;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+        line-height: 1.45;
+        max-width: 42rem;
+        padding: 0 0.75rem;
+        font-weight: 600;
+    }
+
     .notifs-rep-departement-container {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
         justify-content: center;
+        width: 100%;
         max-width: 800px;
+        margin: 0 auto;
         align-self: center;
-        background-color: whitesmoke;
-        border-radius: 30px;
-        padding: 5px;
+        background-color: #f8fafc;
+        border-radius: 24px;
+        padding: clamp(12px, 3vw, 20px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        box-sizing: border-box;
     }
-    .notif-message-div {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 25px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        
-    }
-    h3 {
+
+    .notifs-rep-departement-container .notif-message-div h3 {
         color: #01013e;
+        margin: 0 0 8px;
+        font-size: clamp(1rem, 2.5vw, 1.15rem);
+    }
+
+    .message-ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .message-ul a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .message-ul li {
+        padding: 10px 12px;
+        border-radius: 12px;
+        transition: background 0.15s ease;
+    }
+
+    .message-ul a:hover li {
+        background: rgba(1, 1, 62, 0.06);
+    }
+
+    .notif-message-div {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: clamp(12px, 3vw, 18px);
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        background: #fff;
+    }
+
+    .notifs-messages-div {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .notifs-messages-div .notif-message-div h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #01013e;
+        word-break: break-word;
+    }
+
+    @media (min-width: 640px) {
+        .notifs-messages-div .notif-message-div {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 16px;
+            align-items: start;
+        }
+
+        .notifs-messages-div .notif-message-div h4:last-child {
+            grid-column: 1 / -1;
+        }
     }
 
 </style>
+{% endblock %}

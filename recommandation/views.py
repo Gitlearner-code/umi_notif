@@ -12,44 +12,62 @@ from django.utils.text import slugify
 
 User = get_user_model()
 
+
+def _preview_labels(cleaned_data):
+    """Human-readable labels for the recap screen (not raw choice keys)."""
+    dept = dict(Message.DEPARTEMENT_CHOICES)
+    mtype = dict(Message.MESSAGE_TYPE_CHOICES)
+    return {
+        "departement": dept.get(cleaned_data.get("departement"), cleaned_data.get("departement")),
+        "level": cleaned_data.get("level"),
+        "message_type": mtype.get(cleaned_data.get("message_type"), cleaned_data.get("message_type")),
+    }
+
+
 @never_cache
 def home_view(request):
     form = MessageForm()  # always define a default
-    print("home_view called:", request.method, request.POST)
+    print(request.POST)
     if request.method == 'POST':
         if 'preview' in request.POST:
             form = MessageForm(request.POST)
             if form.is_valid():
                 return render(request, 'notif-message-preview.html', {
                     'form': form,
-                    'data': form.cleaned_data
+                    'data': form.cleaned_data,
+                    'preview': _preview_labels(form.cleaned_data),
                 })
+
         
         elif 'post' in request.POST:
-            print("Posting message...")
+            print("post view hit\n"*30)
             form = MessageForm(request.POST)
             if form.is_valid():
                 message = form.save()
-                messages.success(request, " Merci pour votre confiance. Votre message a ete envoye au BDE pour etre pris en compte. et gardez toujours a l'esprit que votre voix compte! 🎉")
-                # Collect recipients
                 exe_users = User.objects.filter(user_type='EXE')
                 rep_users = User.objects.filter(user_type='REP', departement=message.departement)
                 recipients = list(exe_users.values_list('email', flat=True)) + \
                              list(rep_users.values_list('email', flat=True))
 
-                # Send email notification
+                # Email must not block the redirect or the success flash message
                 if recipients:
-                    send_mail(
-                        subject="New Message Posted",
-                        message=f"A new message has been posted in {message.departement}:\n\n{message.content}",
-                        from_email='darwill367@gmail.com',  # or settings.DEFAULT_FROM_EMAIL
-                        recipient_list=recipients,
-                        fail_silently=False,
-                    )
-
-                # Success feedback
-                
-                return redirect('home')  # PRG pattern
+                    try:
+                        send_mail(
+                            subject="New Message Posted",
+                            message=f"A new message has been posted in {message.departement}:\n\n{message.content}",
+                            from_email='darwill367@gmail.com',
+                            recipient_list=recipients,
+                            fail_silently=True,
+                        )
+                    except Exception:
+                        pass
+                messages.success(
+                    request,
+                    "Merci pour votre confiance. Votre message a été envoyé au BDE pour être pris en compte. "
+                    "Gardez toujours à l'esprit que votre voix compte!",
+                )   
+                print("Message envoyé avec succès.\n"*30)
+                return redirect('home')
 
             else:
                 messages.error(request, "Please correct the highlighted fields before posting.")

@@ -1,4 +1,5 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+{% block body %}
 <h4 class="note">Cette section n'est reserve qu'a une liste specifique de certains  membres  du Bureau des Etudiants (BDE). et des representants de departements si vous n'en netes pas membre vous ne serez pas en mesure du vous connecter. vous pouvez cependant publier</h4>
 <a href="{%url 'home'%}">Publier un message.</a>
 <form method="post">
@@ -71,6 +72,7 @@
       form {
           width: 90%;
       }
-  }
+      }
 
 </style>
+{% endblock %}
