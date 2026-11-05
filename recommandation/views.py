@@ -27,7 +27,6 @@ def _preview_labels(cleaned_data):
 @never_cache
 def home_view(request):
     form = MessageForm()  # always define a default
-    print(request.POST)
     if request.method == 'POST':
         if 'preview' in request.POST:
             form = MessageForm(request.POST)
@@ -40,7 +39,6 @@ def home_view(request):
 
         
         elif 'post' in request.POST:
-            print("post view hit\n"*30)
             form = MessageForm(request.POST)
             if form.is_valid():
                 message = form.save()
@@ -53,8 +51,11 @@ def home_view(request):
                 if recipients:
                     try:
                         send_mail(
-                            subject="New Message Posted",
-                            message=f"A new message has been posted in {message.departement}:\n\n{message.content}",
+                            subject="Nouveau message publié",
+                            message=(
+                                f"Un nouveau message a été publié dans le département {message.departement} :\n\n"
+                                f"{message.content}"
+                            ),
                             from_email='darwill367@gmail.com',
                             recipient_list=recipients,
                             fail_silently=True,
@@ -65,12 +66,14 @@ def home_view(request):
                     request,
                     "Merci pour votre confiance. Votre message a été envoyé au BDE pour être pris en compte. "
                     "Gardez toujours à l'esprit que votre voix compte!",
-                )   
-                print("Message envoyé avec succès.\n"*30)
+                )
                 return redirect('home')
 
             else:
-                messages.error(request, "Please correct the highlighted fields before posting.")
+                messages.error(
+                    request,
+                    "Veuillez corriger les champs signalés avant de publier.",
+                )
                 return render(request, 'home.html', {'form': form})
 
         elif 'modify' in request.POST:
@@ -182,4 +185,8 @@ def exe_departement_list(request):
 
 def about_us_view(request):
     return render(request, "a-propos.html")
-# views.py
+
+
+@never_cache
+def message_thank_you_view(request):
+    return render(request, "message-merci.html")

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,15 +8,24 @@
 </head>
 <body>
     <header class="site-header">
-        <a class="site-brand" href="{% url 'home' %}"><h1>UMI NOTIF</h1></a>
+        <a class="site-brand" href="{% url 'home' %}">
+            <img
+                class="site-logo"
+                src="{% static 'images/umi-notif-logo.jpeg' %}"
+                alt="Logo BDE"
+                width="200"
+                height="52"
+                decoding="async"
+            >
+        </a>
         <nav class="site-nav" aria-label="Navigation principale">
             {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}">Logout</a>
-                <a href="{% url 'notification' %}">Voir messages</a>
+                <a href="{% url 'logout' %}">Déconnexion</a>
+                <a href="{% url 'notification' %}">Voir les messages</a>
             {% else %}
-                <a href="{% url 'login_view' %}">Login</a>
+                <a href="{% url 'login_view' %}">Connexion</a>
             {% endif %}
-            <a href="a-propos.html">À propos</a>
+            <a style="display: none;" href="a-propos.html">À propos</a>
         </nav>
     </header>
 
@@ -55,17 +65,19 @@
         }
 
         .site-brand {
-            color: white;
+            display: flex;
+            align-items: center;
             text-decoration: none;
             min-width: 0;
+            flex-shrink: 0;
         }
 
-        .site-brand h1 {
-            margin: 0;
-            font-size: clamp(1rem, 2.5vw, 1.35rem);
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            line-height: 1.2;
+        .site-logo {
+            display: block;
+            height: clamp(36px, 9vw, 52px);
+            width: auto;
+            max-width: min(220px, 58vw);
+            object-fit: contain;
         }
 
         .site-nav {

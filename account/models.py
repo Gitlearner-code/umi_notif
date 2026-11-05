@@ -4,27 +4,27 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     USER_TYPE_CHOICES = [
-        ('EXEC', 'Executif'),
-        ('REP', 'Representant'),
+        ('EXEC', 'Exécutif'),
+        ('REP', 'Représentant'),
     ]
     FUNCTION_CHOICES = [
-        ('PRESIDENT', 'President'),
-        ('VICE_P', 'Vice President'),
-        ('SEC', 'Secretaire'),
+        ('PRESIDENT', 'Président'),
+        ('VICE_P', 'Vice-président'),
+        ('SEC', 'Secrétaire'),
         ('COM', 'Chargé a la communication'),
         ('NUM', 'Chargé au numérique'),
         ('ACOM', 'Chargé adjoint a la communication'),
         ('ANUM', 'Chargé adjoint au numérique'),
     ]
     DEPARTEMENTS_CHOICES = [
-        ('BA', 'bUSINESS ADMINISTRATION'),   
-        ('G.CIVIL', 'GENIE CIVIL'),
+        ('BA', 'Administration des affaires'),
+        ('G.CIVIL', 'Génie civil'),
         ('BTS', 'BTS'),
-        ('SEG', 'SCIENCES ECONOMIQUES ET GESTION'),
-        ('GLT', 'GENIE LOGICIEL ET TRANSPORT'),
-        ('D', 'DROIT'),
-        ('G.I', 'GENIE INFORMATIQUE'),
-        ('JC', 'JOURNALISME ET COMMUNICATION'),
+        ('SEG', 'Sciences économiques et gestion'),
+        ('GLT', 'Génie logiciel et transport'),
+        ('D', 'Droit'),
+        ('G.I', 'Génie informatique'),
+        ('JC', 'Journalisme et communication'),
 ]
 
     user_type = models.CharField(max_length=15, choices=USER_TYPE_CHOICES)

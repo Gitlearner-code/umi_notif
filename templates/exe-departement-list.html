@@ -10,23 +10,23 @@
           {{ message.content|truncatewords:5 }}
         </a>
       </h4>
-      <h4>Date: {{ message.created_at|date:"d/m/Y" }}</h4>
+      <h4>Date : {{ message.created_at|date:"d/m/Y" }}</h4>
     </div>
   {% empty %}
-    <p>No messages available yet.</p>
+    <p>Aucun message pour le moment.</p>
   {% endfor %}
 </div>
 
 <!-- Pagination controls -->
 <div class="pagination">
   {% if messages.has_previous %}
-    <a href="?page={{ messages.previous_page_number }}">Previous</a>
+    <a href="?page={{ messages.previous_page_number }}">Précédent</a>
   {% endif %}
 
-  <span>Page {{ messages.number }} of {{ messages.paginator.num_pages }}</span>
+  <span>Page {{ messages.number }} sur {{ messages.paginator.num_pages }}</span>
 
   {% if messages.has_next %}
-    <a href="?page={{ messages.next_page_number }}">Next</a>
+    <a href="?page={{ messages.next_page_number }}">Suivant</a>
   {% endif %}
 </div>
 

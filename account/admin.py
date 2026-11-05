@@ -20,7 +20,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            # 👇 Removed 'username' here, it will be auto-generated
+            #  Removed 'username' here, it will be auto-generated
             'fields': ('first_name', 'last_name', 'email', 'password1', 'password2', 'user_type', 'function', 'departement'),
         }),
     )

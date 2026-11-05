@@ -3,7 +3,7 @@ from django.utils.text import slugify
 
 class Message(models.Model):
     DEPARTEMENT_CHOICES = [
-        ('BA', 'Business Administration'),
+        ('BA', 'Administration des affaires'),
         ('G.CIVIL', 'Génie Civil'),
         ('BTS', 'BTS'),
         ('SEG', 'Sciences Economiques et Gestion'),
@@ -13,22 +13,22 @@ class Message(models.Model):
         ('JC', 'Journalisme et Communication'),
     ]
     LEVEL_CHOICES = [
-
         ('L1', 'L1' ),
         ('L2', 'L2' ),
         ('L3', 'L3' ),
-        ('L4', 'L4' ),
-        ('L5', 'L5' ),
+        ('L4', 'Année : 4'),
+        ('L5', 'Année : 5'),
     ]
     MESSAGE_TYPE_CHOICES = [
         ('SUG', 'Suggestion'),
         ('PLT', 'Plainte'),
         ('RMQ', 'Remarque'),
+        ('OTHER','Autre')
     ]
     slug = models.SlugField(unique=True)
     departement = models.CharField(max_length=20, choices=DEPARTEMENT_CHOICES,blank=False, null=False )
     level = models.CharField(max_length=2, choices=LEVEL_CHOICES, blank=False, null=False)
-    message_type = models.CharField(max_length=3, choices=MESSAGE_TYPE_CHOICES, blank=False, null=False)
+    message_type = models.CharField(max_length=5, choices=MESSAGE_TYPE_CHOICES, blank=False, null=False)
     content = models.TextField(max_length=1000, blank=False, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     

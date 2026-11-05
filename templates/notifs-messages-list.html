@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block body %}
    <a href="{%url 'message_content'%}">
-        click this link
+        Voir les messages
     </a>
     
     <a href="{%url 'message_content'%}">
         <div class="notifs-rep-departement-container">
         <h3 class="depatement-title">
-            Genie Informatique
+            Génie informatique
         </h3>
         <div class="notifs-messages-div">
           {% for message in messages %}
@@ -15,16 +15,21 @@
                 <h4>{{ message.departement }}</h4>
                 <h4>{{message.level}}</h4>
                 <h4>{{ message.content|truncatewords:2  }}</h4>
-                <h4>Date: {{ message.created_at|date:"d/m/Y" }}</h4>
+                <h4>Date : {{ message.created_at|date:"d/m/Y" }}</h4>
             </div>
           {% empty %}
-            <p>No messages available yet.</p>
+            <p>Aucun message pour le moment.</p>
           {% endfor %}
         </div>
 </div>
     </a>
 
 <style>
+    body{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 .notifs-rep-departement-container {
     margin: 20px;
     padding: 20px;
@@ -44,7 +49,7 @@
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: #f9f9f9;
+    background-color: #0c1d42;
 }
 .notif-message-div h4 {
     margin: 5px 0;

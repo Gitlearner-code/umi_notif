@@ -25,10 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
-
-
+# Overridden below from DEBUG env (default True for local dev).
 
 # Application definition
 
@@ -126,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 
@@ -141,9 +138,20 @@ USE_TZ = True
 ALLOWED_HOSTS = ['umi-notif.onrender.com','127.0.0.1', 'localhost',]
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+# Default True locally so runserver serves files from STATICFILES_DIRS.
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+if DEBUG:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Serve from static/ in dev without running collectstatic first.
+WHITENOISE_USE_FINDERS = DEBUG
 
 AUTH_USER_MODEL = 'account.User'  # Specify the custom user model
 
@@ -161,6 +169,5 @@ LOGOUT_REDIRECT_URL = 'login_view'
 
 # Default primary key field type
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 

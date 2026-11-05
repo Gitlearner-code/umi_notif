@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block body %}
+
+<div class="home-page">
+  <div
+    class="home-bg"
+    aria-hidden="true"
+    style="background-image: url('{% static 'images/home/home-bg-1.jpeg' %}');"
+  >
+    <div class="home-bg__overlay"></div>
+  </div>
+
+  <div class="home-page__content">
 
 {% for message in messages %}
   {% if forloop.first %}
-  <div id="feedbackModal" class="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle" aria-describedby="feedbackModalDesc">
-    <div class="feedback-modal__backdrop" onclick="closeModal()" aria-hidden="true"></div>
+  <div id="feedbackModal" class="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle" aria-describedby="feedbackModalDesc"{% if "success" in message.tags %} data-success-modal="1"{% endif %}>
+    <div class="feedback-modal__backdrop" onclick="{% if 'success' in message.tags %}goToThankYou(){% else %}closeModal(){% endif %}" aria-hidden="true"></div>
     <div class="feedback-modal__panel {% if 'success' in message.tags %}feedback-modal__panel--success{% elif 'error' in message.tags %}feedback-modal__panel--error{% else %}feedback-modal__panel--neutral{% endif %}">
-      <button type="button" class="feedback-modal__close" onclick="closeModal()" aria-label="Fermer">&times;</button>
+      <button type="button" class="feedback-modal__close" onclick="{% if 'success' in message.tags %}goToThankYou(){% else %}closeModal(){% endif %}" aria-label="Fermer">&times;</button>
       {% if "success" in message.tags %}
       <div class="feedback-modal__icon feedback-modal__icon--success" aria-hidden="true">
         <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,14 +44,14 @@
       {% endif %}
       <div class="feedback-modal__actions {% if 'success' in message.tags %}feedback-modal__actions--success{% endif %}">
         {% if "success" in message.tags %}
-        <button type="button" class="feedback-btn feedback-btn--secondary" onclick="closeModal()">Fermer</button>
+        <button type="button" class="feedback-btn feedback-btn--secondary" onclick="goToThankYou()">Fermer</button>
         <a class="feedback-btn feedback-btn--primary" href="#notif-message-form" onclick="closeModal(); return true;">Écrire un autre message</a>
         {% elif "error" in message.tags %}
         <button type="button" class="feedback-btn feedback-btn--secondary" onclick="closeModal()">Fermer</button>
         <a class="feedback-btn feedback-btn--primary" href="#notif-message-form" onclick="closeModal(); return true;">Corriger le formulaire</a>
         {% else %}
         <button type="button" class="feedback-btn feedback-btn--secondary" onclick="closeModal()">Fermer</button>
-        <a class="feedback-btn feedback-btn--primary" href="{% url 'home' %}">OK</a>
+        <a class="feedback-btn feedback-btn--primary" href="{% url 'home' %}">D'accord</a>
         {% endif %}
       </div>
     </div>
@@ -47,6 +59,12 @@
   {% endif %}
   {% endfor %}
   <script>
+    var thankYouUrl = "{% url 'message_thank_you' %}";
+
+    function goToThankYou() {
+      window.location.href = thankYouUrl;
+    }
+
     function closeModal() {
       var el = document.getElementById("feedbackModal");
       if (el) {
@@ -58,25 +76,32 @@
         }, 220);
       }
     }
+
     document.addEventListener("DOMContentLoaded", function () {
       var modal = document.getElementById("feedbackModal");
       if (modal) {
         document.body.style.overflow = "hidden";
       }
     });
+
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeModal();
+      if (e.key !== "Escape") return;
+      var modal = document.getElementById("feedbackModal");
+      if (modal && modal.getAttribute("data-success-modal") === "1") {
+        goToThankYou();
+      } else {
+        closeModal();
+      }
     });
   </script>
 
-  <main>
+  <main class="home-main">
       <div class="container">
           <p class="init-text">
-              Bienvenue sur UMI NOTIF. Une plateforme de
-              notification du BDE pour les étudiants de l'UMI. Ici vous
-              avez l'amabilité de dire le fond de vos pensées de manière
-              anonyme et respectueuse. Vous pouvez vous plaindre,
-              faire des remarques et même des suggestions.
+              Bienvenue sur votre portail avec le Bureau des étudiants (BDE).
+              C’est l’endroit pour faire remonter, de manière anonyme et respectueuse,
+              ce qui vous préoccupe : une plainte, une remarque ou une suggestion,
+              sans vous exposer directement.
           </p>
           <form id="notif-message-form" class="notif-form" method="post">
               <h4>Entrez votre message de manière anonyme</h4>
@@ -127,9 +152,52 @@
         <p>&copy; {{ year }} UMI NOTIF</p>
     </footer>
 
+</div><!-- .home-page__content -->
+</div><!-- .home-page -->
 
 <style>
+/* Arrière-plan fixe — image : static/images/home/home-bg-1.jpeg */
+.home-page {
+  position: relative;
+  min-height: calc(100vh - var(--header-h, 64px));
+  display: flex;
+  flex-direction: column;
+}
 
+.home-bg {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--header-h, 64px);
+  bottom: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.home-bg__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(1, 1, 62, 0.72) 0%,
+    rgba(1, 1, 62, 0.55) 50%,
+    rgba(1, 1, 62, 0.78) 100%
+  );
+  z-index: 1;
+}
+
+.home-page__content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 
 .container{
   margin-top: clamp(12px, 4vw, 28px);
@@ -195,6 +263,7 @@ form label {
     font-weight: 600;
     display: block;
     margin-bottom: 6px;
+    text-align: start;
     color: #1a1a2e;
 }
 
@@ -248,12 +317,20 @@ form label {
     margin-bottom: clamp(16px, 4vw, 28px);
 }
 
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .site-footer {
   margin-top: auto;
   padding: 24px 16px 32px;
   color: rgba(255,255,255,0.55);
   font-size: 0.85rem;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .site-footer p {

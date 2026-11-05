@@ -4,26 +4,32 @@ from .models import Message
 
 class MessageForm(forms.ModelForm):
     departement = forms.ChoiceField(
-        choices=[('', 'Select your department')] + Message.DEPARTEMENT_CHOICES,
-        widget=forms.Select()   
+        label='Département',
+        choices=[('', 'Sélectionnez votre département')] + Message.DEPARTEMENT_CHOICES,
+        widget=forms.Select(),
     )
     level = forms.ChoiceField(
-        choices=[('', 'Choose your level')],  # Initial empty choice
-        widget=forms.Select()
+        label='Niveau',
+        choices=[('', 'Choisissez votre niveau')],
+        widget=forms.Select(),
     )
     message_type = forms.ChoiceField(
-        choices=[('', 'Message type')] + Message.MESSAGE_TYPE_CHOICES,
-        widget=forms.Select()
+        label='Type de message',
+        choices=[('', 'Type de message')] + Message.MESSAGE_TYPE_CHOICES,
+        widget=forms.Select(),
     )
 
     class Meta:
         model = Message
         fields = ['departement', 'level', 'message_type', 'content']
+        labels = {
+            'content': 'Message',
+        }
         widgets = {
-            'departement': forms.Select(attrs={'placeholder': 'Select your department'}),
-            'level': forms.Select(attrs={'placeholder': 'Choose your level'}),
-            'message_type': forms.Select(attrs={'placeholder': 'Message type'}),
-            'content': forms.Textarea(attrs={'placeholder': 'Write your message here...'}),
+            'content': forms.Textarea(attrs={
+                'placeholder': 'Rédigez votre message ici…',
+                'rows': 6,
+            }),
         }
 
 
@@ -36,10 +42,11 @@ class MessageForm(forms.ModelForm):
         if 'departement' in self.data:
             dept = self.data.get('departement')
 
+
             if dept == 'BA':
                 self.fields['level'].choices = [('L1','L1'),('L2','L2'),('L3','L3')]
             elif dept == 'G.CIVIL':
-                self.fields['level'].choices = [('L1','L1'),('L2','L2'),('L3','L3'),('L4','L4'),('L5','L5')]
+                self.fields['level'].choices = [('L1','ANNEE: 1'),('L2','ANNEE: 2'),('L3','ANNEE: 3'),('L4','ANNEE: 4'),('L5','ANNEE: 5')]
             elif dept == 'BTS':
                 self.fields['level'].choices = [('L1','L1'),('L2','L2'),('L3','L3')]
             elif dept == 'SEG':
@@ -49,7 +56,7 @@ class MessageForm(forms.ModelForm):
             elif dept == 'D':
                 self.fields['level'].choices = [('L1','L1'),('L2','L2'),('L3','L3')]
             elif dept == 'G.I': 
-                self.fields['level'].choices = [('L1','L1'),('L2','L2'),('L3','L3'),('L4','L4'),('L5','L5')]
+                self.fields['level'].choices = [('L1','ANNEE: 1'),('L2','ANNEE: 2'),('L3','ANNEE: 3'),('L4','ANNEE: 4'),('L5','ANNEE: 5')]
             elif dept == 'JC':
                 self.fields['level'].choices = [('L1','L1'),('L2','L2'),('L3','L3')]
             else:

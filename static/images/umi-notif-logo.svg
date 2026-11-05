@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="52" viewBox="0 0 200 52" role="img" aria-label="UMI NOTIF">
+  <rect x="0" y="4" width="44" height="44" rx="10" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+  <text x="22" y="33" text-anchor="middle" fill="#fff" font-family="system-ui,Segoe UI,Arial,sans-serif" font-size="14" font-weight="700">U</text>
+  <text x="54" y="34" fill="#fff" font-family="system-ui,Segoe UI,Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="0.04em">UMI NOTIF</text>
+  <text x="54" y="46" fill="rgba(255,255,255,0.55)" font-family="system-ui,Segoe UI,Arial,sans-serif" font-size="8" letter-spacing="0.12em">PLACEHOLDER</text>
+</svg>

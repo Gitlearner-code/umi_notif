@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
     <div class="welcome-div">
-        <h1>Welcome to the notification main page {{ request.user.last_name }}</h1>
+        <h1>Bienvenue sur la page des notifications, {{ request.user.last_name }}</h1>
     </div>
 
 {% if request.user.user_type == 'EXEC' %}
@@ -9,7 +9,7 @@
 
     <div>
         <div class="notifs-rep-departement-container">
-             <h3>Department Messages</h3>
+             <h3>Messages par département</h3>
             {% for dept_name, messages in departements.items %}
                 <div class="notif-message-div">
                     
@@ -22,7 +22,7 @@
                                 <li>{{ message.departement }} - {{ message.message_type }} ({{ message.created_at }})</li>
                             </a>
                         {% empty %}
-                            <li>No messages in this department.</li>
+                            <li>Aucun message dans ce département.</li>
                 
 
                         {% endfor %}
@@ -30,7 +30,7 @@
                 </div>
 
           {% empty %}
-            <p>No messages available yet.</p>
+            <p>Aucun message pour le moment.</p>
           {% endfor %}
     </div>
 
@@ -48,7 +48,7 @@
       Vous pourrez voir ici tous les messages liés à votre département 
       en votre qualité de Représentant du Département: {{ request.user.get_departement_display }}
     </h3>
-    <p style="color: white;">Total messages dans votre département: {{ message_count }}</p>
+    <p style="color: white;">Nombre total de messages dans votre département : {{ message_count }}</p>
     <div class="notifs-rep-departement-container">
         <div class="notifs-messages-div">
           {% for message in messages %}
@@ -57,11 +57,11 @@
                 <h4>{{ message.get_departement_display }}</h4>
                 <h4>{{ message.get_level_display }}</h4>
                 <h4>{{ message.content|truncatewords:5 }}</h4>
-                <h4>Date: {{ message.created_at|date:"d/m/Y" }}</h4>
+                <h4>Date : {{ message.created_at|date:"d/m/Y" }}</h4>
             </div>
             </a>
           {% empty %}
-            <p>No messages available yet.</p>
+            <p>Aucun message pour le moment.</p>
           {% endfor %}
         </div>
     </div>
@@ -119,6 +119,7 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
+        row-gap: 10px;
         justify-content: center;
         width: 100%;
         max-width: 800px;
@@ -146,8 +147,10 @@
 
     .message-ul a {
         text-decoration: none;
-        color: inherit;
+        color: white;
         display: block;
+        background-color: #01013e;
+        margin-bottom: 5px;
     }
 
     .message-ul li {
@@ -165,6 +168,7 @@
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
+        row-gap: 10px;
         padding: clamp(12px, 3vw, 18px);
         border: 1px solid #e2e8f0;
         border-radius: 20px;
@@ -177,6 +181,8 @@
         flex-direction: column;
         gap: 12px;
         width: 100%;
+        background-color: #01013e;
+        margin-bottom: 15px;
     }
 
     .notifs-messages-div .notif-message-div h4 {
